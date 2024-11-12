@@ -5,13 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Galería de Películas</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://meet.jit.si/external_api.js"></script>
+  <style>
+    /* Estilos generales */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f4f6f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #007bff;
+      color: #fff;
+      width: 100%;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1em;
+    }
+
+    /* Botón de videollamada */
+    button {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    /* Sección de tarjetas de películas */
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .movie-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .movie-card h2 {
+      font-size: 1.5em;
+      margin: 15px 20px 5px;
+      color: #007bff;
+    }
+
+    .movie-card p {
+      font-size: 1em;
+      margin: 5px 20px 15px;
+      color: #666;
+    }
+
+    /* Contenedor de videollamada */
+    #jitsi-container {
+      width: 80%;
+      height: 500px;
+      max-width: 800px;
+      margin-top: 30px;
+      background: #f8f9fa;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      display: none; /* Oculto por defecto */
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 0.9em;
+      }
+
+      #jitsi-container {
+        width: 100%;
+        height: 400px;
+      }
+    }
+  </style>
 </head>
-<script src="//code.tidio.co/l1ps4dn7semhlvttp4rtbodghf5tapsc.js" async>
-  </script>
 <body>
   <header>
     <h1>Galería de Películas</h1>
     <p>Explora nuestra colección de películas populares.</p>
+    <!-- Botón para iniciar la videollamada -->
+    <button onclick="iniciarJitsi()">Iniciar Videollamada</button>
   </header>
 
   <main>
@@ -19,7 +142,7 @@
       <div class="movie-card">
         <img src="01.png" alt="Película 1">
         <h2>Película 1</h2>
-        <p> Disfruta de esta emocionante historia llena de aventura.</p>
+        <p>Disfruta de esta emocionante historia llena de aventura.</p>
       </div>
 
       <div class="movie-card">
@@ -33,10 +156,40 @@
         <h2>Película 3</h2>
         <p>Una comedia romántica para disfrutar en compañía. Ríe y enamórate con esta historia.</p>
       </div>
-
       <!-- Agrega más tarjetas de películas aquí -->
     </section>
+
+    <!-- Contenedor para la videollamada -->
+    <section id="jitsi-container"></section>
   </main>
 
+  <script>
+    function iniciarJitsi() {
+      // Mostrar el contenedor de Jitsi
+      document.getElementById("jitsi-container").style.display = "block";
+
+      const domain = "meet.jit.si";
+      const options = {
+        roomName: "GaleriaPeliculasVideollamada",
+        width: "100%",
+        height: "100%",
+        parentNode: document.getElementById("jitsi-container"),
+        configOverwrite: {},
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+        },
+      };
+
+      // Crear la videollamada con Jitsi
+      const api = new JitsiMeetExternalAPI(domain, options);
+
+      // Cerrar la videollamada cuando el usuario salga
+      api.addEventListener("readyToClose", () => {
+        api.dispose();
+        document.getElementById("jitsi-container").style.display = "none"; // Ocultar el contenedor
+      });
+    }
+  </script>
 </body>
 </html>
